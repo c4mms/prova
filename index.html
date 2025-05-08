@@ -21,27 +21,28 @@
       });
 
       // Component for moving the rig with the right controller joystick
-      AFRAME.registerComponent('joystick-movement', {
-        tick: function () {
-          const rig = document.querySelector('#rig');
-          const head = document.querySelector('#head');
-          const controller = document.querySelector('#rightHand');
-
-          if (!controller || !controller.components['oculus-touch-controls']) return;
-
-          const gamepad = controller.components['oculus-touch-controls'].controller;
-          if (gamepad && gamepad.axes.length >= 4) {
-            const y = gamepad.axes[3];
-            const x = gamepad.axes[2];
-
-            if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
-              const dir = new THREE.Vector3(x * 0.1, 0, -y * 0.1);
-              dir.applyQuaternion(head.object3D.quaternion);
-              rig.object3D.position.add(dir);
-            }
+     AFRAME.registerComponent('joystick-movement', {
+      tick: function () {
+        const rig = document.querySelector('#rig');
+        const head = document.querySelector('#head');
+        const controller = document.querySelector('#rightHand');
+    
+        if (!controller || !controller.components['tracked-controls']) return;
+    
+        const gamepad = controller.components['tracked-controls'].controller;
+        if (gamepad && gamepad.axes.length >= 4) {
+          const y = gamepad.axes[3];
+          const x = gamepad.axes[2];
+    
+          if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+            const dir = new THREE.Vector3(x * 0.1, 0, -y * 0.1);
+            dir.applyQuaternion(head.object3D.quaternion);
+            rig.object3D.position.add(dir);
           }
         }
-      });
+      }
+    });
+
     </script>
   </head>
   <body>
@@ -73,9 +74,10 @@
 
         <!-- Left hand for rotation -->
         <a-entity id="rightHand"
-                  oculus-touch-controls="hand: right"
-                  joystick-rotation>
-        </a-entity>
+          oculus-touch-controls="hand: right"
+          tracked-controls="hand: right"
+          joystick-movement>
+          </a-entity>
       </a-entity>
     </a-scene>
   </body>
